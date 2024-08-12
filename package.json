@@ -2,10 +2,10 @@
   "name": "photoresizer",
   "version": "1.0.0",
   "description": "resize vos photos",
-  "main": "app.js",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "electron .",
+    "build": "electron-builder"
   },
   "author": "samuel chojnacki",
   "license": "ISC",
@@ -13,6 +13,22 @@
     "dot-env": "^0.0.1",
     "fs": "^0.0.1-security",
     "ora": "^6.1.2",
+    "semver": "^7.6.3",
     "sharp": "^0.31.3"
+  },
+  "devDependencies": {
+    "electron": "25.0.0",
+    "electron-builder": "^24.13.3",
+    "husky": "^9.1.4"
+  },
+  "build": {
+    "appId": "com.yourcompany.photoresizer",
+    "mac": {
+      "category": "public.app-category.photography",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    }
   }
 }

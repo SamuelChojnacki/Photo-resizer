@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Resizer Config</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: fit;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    h1 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #555;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #f9f9f9;
+      padding: 5px 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+    }
+    .checkbox-group input {
+      margin-right: 5px;
+    }
+    input[type="text"] {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #f9f9f9;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Photo Resizer Configuration</h1>
+    <form id="configForm">
+      <div class="button-group">
+        <button type="button" id="selectInputFolder" class="btn btn-primary">Select Input Folder</button>
+      </div>
+      
+      <div class="button-group">
+        <button type="button" id="selectOutputFolderPath" class="btn btn-primary">Select Output Folder Path</button>
+      </div>
+      
+      <div class="mb-4">
+        <label for="outputFolderName" class="block text-sm font-medium text-gray-700">Output Folder Name:</label>
+        <input type="text" id="outputFolderName" name="outputFolderName" class="input input-bordered w-full" required>
+      </div>
+      
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Formats:</label>
+        <div class="checkbox-group" id="formats">
+          <label><input type="checkbox" value="png"> PNG</label>
+          <label><input type="checkbox" value="jpg"> JPG</label>
+          <label><input type="checkbox" value="jpeg"> JPEG</label>
+          <label><input type="checkbox" value="webp"> WEBP</label>
+        </div>
+      </div>
+      
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Sizes:</label>
+        <div class="checkbox-group" id="sizes">
+          <label><input type="checkbox" value="50"> 50</label>
+          <label><input type="checkbox" value="100"> 100</label>
+          <label><input type="checkbox" value="150"> 150</label>
+          <label><input type="checkbox" value="200"> 200</label>
+          <label><input type="checkbox" value="250"> 250</label>
+          <label><input type="checkbox" value="300"> 300</label>
+          <label><input type="checkbox" value="350"> 350</label>
+          <label><input type="checkbox" value="400"> 400</label>
+          <label><input type="checkbox" value="450"> 450</label>
+          <label><input type="checkbox" value="500"> 500</label>
+          <label><input type="checkbox" value="600"> 600</label>
+          <label><input type="checkbox" value="700"> 700</label>
+          <label><input type="checkbox" value="800"> 800</label>
+          <label><input type="checkbox" value="900"> 900</label>
+          <label><input type="checkbox" value="1000"> 1000</label>
+          <label><input type="checkbox" value="1250"> 1250</label>
+          <label><input type="checkbox" value="1500"> 1500</label>
+          <label><input type="checkbox" value="1750"> 1750</label>
+          <label><input type="checkbox" value="2000"> 2000</label>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-primary w-full">Start Processing</button>
+    </form>
+  </div>
+  <script>
+    const form = document.getElementById('configForm');
+    const selectInputFolderButton = document.getElementById('selectInputFolder');
+    const selectOutputFolderPathButton = document.getElementById('selectOutputFolderPath');
+
+    let inputFolderPath = '';
+    let outputFolderPath = '';
+
+    selectInputFolderButton.addEventListener('click', async () => {
+      const result = await window.electron.selectFolder();
+      if (result) {
+        inputFolderPath = result;
+        alert(`Selected Input Folder: ${inputFolderPath}`);
+      }
+    });
+
+    selectOutputFolderPathButton.addEventListener('click', async () => {
+      const result = await window.electron.selectFolder();
+      if (result) {
+        outputFolderPath = result;
+        alert(`Selected Output Folder Path: ${outputFolderPath}`);
+      }
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const config = {
+        inputFolder: inputFolderPath,
+        outputFolder: `${outputFolderPath}/${form.outputFolderName.value}`,
+        formats: Array.from(document.querySelectorAll('#formats input:checked')).map(checkbox => checkbox.value),
+        sizes: Array.from(document.querySelectorAll('#sizes input:checked')).map(checkbox => parseInt(checkbox.value)),
+      };
+      const result = await window.electron.startProcessing(config);
+      if (result.success) {
+        alert('Processing started successfully!');
+      } else {
+        alert(`Error: ${result.error}`);
+      }
+    });
+  </script>
+</body>
+</html>

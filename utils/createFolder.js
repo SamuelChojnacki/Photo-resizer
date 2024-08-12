@@ -2,15 +2,14 @@ const path = require("path");
 const fs = require("fs");
 
 /**
-
-Creates the folder architecture to output the resized images.
-@param {object} config - Configuration object.
-@param {string} config.outputFolder - Path to the output folder.
-@param {string[]} config.formats - Array of the desired image formats.
-@param {number[]} config.sizes - Array of the desired image sizes.
-@returns {boolean} - Returns true if the folders were successfully created.
-@throws {Error} - Throws an error if the folders could not be created.
-*/
+ * Creates the folder architecture to output the resized images.
+ * @param {object} config - Configuration object.
+ * @param {string} config.outputFolder - Path to the output folder.
+ * @param {string[]} config.formats - Array of the desired image formats.
+ * @param {number[]} config.sizes - Array of the desired image sizes.
+ * @returns {boolean} - Returns true if the folders were successfully created.
+ * @throws {Error} - Throws an error if the folders could not be created.
+ */
 const createFolder = (config) => {
   const { outputFolder, formats, sizes } = config;
 

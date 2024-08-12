@@ -1,21 +1,21 @@
 const fs = require("fs");
 const os = require("os");
+const path = require("path");
 const createWorker = require("./createWorker");
 
 const systemCpuCores = os.cpus().length;
 
 /**
-
-Dispatches image processing tasks to multiple worker threads for better performance.
-@async
-@param {Object} config - Configuration object for image processing.
-@param {string} config.inputFolder - The folder path containing input images.
-@param {string} config.outputFolder - The folder path for the output images.
-@param {Array.<string>} config.acceptedFormats - An array of image formats accepted by the Sharp library.
-@param {Array.<string>} config.formats - An array of image formats needed in the output.
-@param {Array.<number>} config.sizes - An array of image sizes needed in the output.
-@returns {Promise<void>} - A Promise that resolves when all image processing tasks are complete.
-*/
+ * Dispatches image processing tasks to multiple worker threads for better performance.
+ * @async
+ * @param {Object} config - Configuration object for image processing.
+ * @param {string} config.inputFolder - The folder path containing input images.
+ * @param {string} config.outputFolder - The folder path for the output images.
+ * @param {Array.<string>} config.acceptedFormats - An array of image formats accepted by the Sharp library.
+ * @param {Array.<string>} config.formats - An array of image formats needed in the output.
+ * @param {Array.<number>} config.sizes - An array of image sizes needed in the output.
+ * @returns {Promise<void>} - A Promise that resolves when all image processing tasks are complete.
+ */
 const dispatchWorker = async (config) => {
   // Set up configuration object
   const { inputFolder } = config;
@@ -40,7 +40,7 @@ const dispatchWorker = async (config) => {
   const workerPromises = [];
   for (let i = 0; i < systemCpuCores; i++) {
     workerPromises.push(
-      createWorker("./utils/worker.js", fileChunks[i], i, config)
+      createWorker(path.join(__dirname, 'worker.js'), fileChunks[i], i, config)
     );
   }
 
